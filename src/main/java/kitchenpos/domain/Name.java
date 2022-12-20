@@ -1,12 +1,21 @@
-package kitchenpos.domain.common;
+package kitchenpos.domain;
 
 import kitchenpos.common.ErrorCode;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class Name {
 
+    @Column(nullable = false)
     private String name;
 
+    protected Name() {
+    }
+
     private Name(String name) {
+        isValidNameIsNull(name);
         this.name = name;
     }
 
@@ -24,4 +33,5 @@ public class Name {
     public String getName() {
         return name;
     }
+
 }

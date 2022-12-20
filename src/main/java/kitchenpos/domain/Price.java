@@ -1,4 +1,4 @@
-package kitchenpos.domain.common;
+package kitchenpos.domain;
 
 import kitchenpos.common.ErrorCode;
 
@@ -14,7 +14,6 @@ public class Price {
     private BigDecimal price;
 
     protected Price() {
-
     }
 
     private Price(BigDecimal price) {
@@ -60,4 +59,5 @@ public class Price {
     public int hashCode() {
         return Objects.hash(price);
     }
+
 }

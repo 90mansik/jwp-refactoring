@@ -1,7 +1,6 @@
 package kitchenpos.domain;
 
 import kitchenpos.common.ErrorCode;
-import kitchenpos.domain.common.Price;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

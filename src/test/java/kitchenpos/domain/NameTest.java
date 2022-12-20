@@ -1,7 +1,6 @@
 package kitchenpos.domain;
 
 import kitchenpos.common.ErrorCode;
-import kitchenpos.domain.common.Name;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

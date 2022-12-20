@@ -6,7 +6,8 @@ public class OrderTable {
     private int numberOfGuests;
     private boolean empty;
 
-    public OrderTable(){}
+    public OrderTable() {
+    }
 
     public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
@@ -17,6 +18,10 @@ public class OrderTable {
 
     public static OrderTable of(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         return new OrderTable(id, tableGroupId, numberOfGuests, empty);
+    }
+
+    public void unGroup() {
+        this.tableGroupId = null;
     }
 
     public Long getId() {
@@ -50,4 +55,5 @@ public class OrderTable {
     public void setEmpty(final boolean empty) {
         this.empty = empty;
     }
+
 }

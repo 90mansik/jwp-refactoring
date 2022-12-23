@@ -11,9 +11,9 @@ import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
 
-import static kitchenpos.acceptance.TableGroupRestAssured.단체_지정_요청;
-import static kitchenpos.acceptance.TableGroupRestAssured.단체_해제_요청;
-import static kitchenpos.acceptance.TableRestAssured.주문_테이블_생성_요청;
+import static kitchenpos.acceptance.TableGroupRestAssured.groupRequest;
+import static kitchenpos.acceptance.TableGroupRestAssured.unGroupRequest;
+import static kitchenpos.acceptance.TableRestAssured.createOrderTableRequest;
 import static kitchenpos.domain.OrderTableTestFixture.createOrderTable;
 import static kitchenpos.domain.TableGroupTestFixture.createTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,23 +22,23 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DisplayName("단체 지정 관련 인수 테스트")
 public class TableGroupAcceptanceTest extends AbstractAcceptanceTest {
 
-    private OrderTable 주문테이블1;
-    private OrderTable 주문테이블2;
-    private TableGroup 단체1;
+    private OrderTable orderTable1;
+    private OrderTable orderTable2;
+    private TableGroup group1;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        주문테이블1 = 주문_테이블_생성_요청(createOrderTable(null, null, 5, true)).as(OrderTable.class);
-        주문테이블2 = 주문_테이블_생성_요청(createOrderTable(null, null, 4, true)).as(OrderTable.class);
-        단체1 = createTableGroup(Arrays.asList(주문테이블1, 주문테이블2));
+        orderTable1 = createOrderTableRequest(createOrderTable(null, null, 5, true)).as(OrderTable.class);
+        orderTable2 = createOrderTableRequest(createOrderTable(null, null, 4, true)).as(OrderTable.class);
+        group1 = createTableGroup(Arrays.asList(orderTable1, orderTable2));
     }
 
     @DisplayName("주문 테이블들에 대해 `단체를 설정한다.")
     @Test
     void createTableGroup1() {
         // when
-        ExtractableResponse<Response> response = 단체_지정_요청(단체1);
+        ExtractableResponse<Response> response = groupRequest(group1);
         // then
         단체_지정됨(response);
     }
@@ -47,9 +47,9 @@ public class TableGroupAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     void ungroup() {
         // given
-        TableGroup tableGroup = 단체_지정_요청(단체1).as(TableGroup.class);
+        TableGroup tableGroup = groupRequest(group1).as(TableGroup.class);
         // when
-        ExtractableResponse<Response> response = 단체_해제_요청(tableGroup.getId());
+        ExtractableResponse<Response> response = unGroupRequest(tableGroup.getId());
         // then
         단체_해제됨(response);
     }

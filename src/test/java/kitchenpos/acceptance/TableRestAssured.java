@@ -1,5 +1,4 @@
 package kitchenpos.acceptance;
-
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -7,7 +6,7 @@ import kitchenpos.domain.OrderTable;
 import org.springframework.http.MediaType;
 
 public class TableRestAssured {
-    public static ExtractableResponse<Response> 주문_테이블_생성_요청(OrderTable orderTable) {
+    public static ExtractableResponse<Response> createOrderTableRequest(OrderTable orderTable) {
         return RestAssured
                 .given().log().all()
                 .body(orderTable)
@@ -17,7 +16,7 @@ public class TableRestAssured {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_테이블_목록_조회_요청() {
+    public static ExtractableResponse<Response> selectOrderTablesRequest() {
         return RestAssured
                 .given().log().all()
                 .when().get("/api/tables")
@@ -25,7 +24,7 @@ public class TableRestAssured {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_테이블_비어있는지_여부_변경_요청(Long orderTableId, OrderTable orderTable) {
+    public static ExtractableResponse<Response> changeOrderTableEmptyRequest(Long orderTableId, OrderTable orderTable) {
         return RestAssured
                 .given().log().all()
                 .body(orderTable)
@@ -35,7 +34,7 @@ public class TableRestAssured {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_테이블_방문_손님_수_변경_요청(Long orderTableId, OrderTable orderTable) {
+    public static ExtractableResponse<Response> changeOrderTableQuantityRequest(Long orderTableId, OrderTable orderTable) {
         return RestAssured
                 .given().log().all()
                 .body(orderTable)

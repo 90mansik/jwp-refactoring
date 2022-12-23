@@ -12,8 +12,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kitchenpos.acceptance.ProductRestAssured.상품_목록_조회_요청;
-import static kitchenpos.acceptance.ProductRestAssured.상품_생성_요청;
+import static kitchenpos.acceptance.ProductRestAssured.selectProductsRequest;
+import static kitchenpos.acceptance.ProductRestAssured.createProductRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("상품 관련 인수 테스트")
@@ -23,7 +23,7 @@ public class ProductAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     void 상품_생성() {
         //when
-        ExtractableResponse<Response> response = 상품_생성_요청(1L, "허니콤보", BigDecimal.valueOf(18000));
+        ExtractableResponse<Response> response = ProductRestAssured.createProductRequest(1L, "허니콤보", BigDecimal.valueOf(18000));
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
@@ -32,10 +32,10 @@ public class ProductAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     void 상품_목록_조회() {
         // given
-        ExtractableResponse<Response> response1 = 상품_생성_요청(1L, "허니콤보", BigDecimal.valueOf(18000));
-        ExtractableResponse<Response> response2 = 상품_생성_요청(2L, "레드윙", BigDecimal.valueOf(190000));
+        ExtractableResponse<Response> response1 = ProductRestAssured.createProductRequest(1L, "허니콤보", BigDecimal.valueOf(18000));
+        ExtractableResponse<Response> response2 = ProductRestAssured.createProductRequest(2L, "레드윙", BigDecimal.valueOf(190000));
         // when
-        ExtractableResponse<Response> result = 상품_목록_조회_요청();
+        ExtractableResponse<Response> result = selectProductsRequest();
         // then
         assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
         상품_목록_포함_확인(result, Arrays.asList(response1, response2));

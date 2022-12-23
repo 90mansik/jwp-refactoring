@@ -34,7 +34,7 @@ public class TableAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     void 주문_테이블_생성() {
         // when
-        ExtractableResponse<Response> response = 주문_테이블_생성_요청(주문테이블1);
+        ExtractableResponse<Response> response = createOrderTableRequest(주문테이블1);
         // then
         주문_테이블_생성됨(response);
     }
@@ -43,10 +43,10 @@ public class TableAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     void 주문_테이블_전체_목록_조회() {
         // given
-        ExtractableResponse<Response> response1 = 주문_테이블_생성_요청(주문테이블1);
-        ExtractableResponse<Response> response2 = 주문_테이블_생성_요청(주문테이블2);
+        ExtractableResponse<Response> response1 = createOrderTableRequest(주문테이블1);
+        ExtractableResponse<Response> response2 = createOrderTableRequest(주문테이블2);
         // when
-        ExtractableResponse<Response> response = 주문_테이블_목록_조회_요청();
+        ExtractableResponse<Response> response = selectOrderTablesRequest();
         // then
         주문_테이블_목록_응답됨(response);
         주문_테이블_목록_포함됨(response, Arrays.asList(response1, response2));
@@ -56,11 +56,11 @@ public class TableAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     void 주문테이블_상태_변경() {
         // given
-        OrderTable orderTable = 주문_테이블_생성_요청(주문테이블1).as(OrderTable.class);
+        OrderTable orderTable = createOrderTableRequest(주문테이블1).as(OrderTable.class);
         boolean isEmpty = orderTable.isEmpty();
         OrderTable changeOrderTable = createOrderTable(null, null, orderTable.getNumberOfGuests(), !isEmpty);
         // when
-        ExtractableResponse<Response> response = 주문_테이블_비어있는지_여부_변경_요청(orderTable.getId(),
+        ExtractableResponse<Response> response = changeOrderTableEmptyRequest(orderTable.getId(),
                 changeOrderTable);
         // then
         주문_테이블_비어있는지_여부_변경됨(response, !isEmpty);
@@ -70,11 +70,11 @@ public class TableAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     void 주문테이블_방문자수_변경() {
         // given
-        OrderTable orderTable = 주문_테이블_생성_요청(주문테이블1).as(OrderTable.class);
+        OrderTable orderTable = createOrderTableRequest(주문테이블1).as(OrderTable.class);
         int expectNumberOfGuests = 15;
         OrderTable changeOrderTable = createOrderTable(null, null, expectNumberOfGuests, orderTable.isEmpty());
         // when
-        ExtractableResponse<Response> response = 주문_테이블_방문_손님_수_변경_요청(orderTable.getId(), changeOrderTable);
+        ExtractableResponse<Response> response = changeOrderTableQuantityRequest(orderTable.getId(), changeOrderTable);
         // then
         주문_테이블_방문한_손님_수_변경됨(response, expectNumberOfGuests);
     }

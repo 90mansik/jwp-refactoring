@@ -10,13 +10,13 @@ import static kitchenpos.domain.MenuGroupTestFixture.createMenuGroup;
 
 public class MenuGroupRestAssured {
 
-    public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(Long id, String name) {
+    public static ExtractableResponse<Response> createMenuGroupRequest(Long id, String name) {
         MenuGroup menuGroup = createMenuGroup(id, name);
 
-        return 메뉴_그룹_생성_요청(menuGroup);
+        return createMenuGroupRequest(menuGroup);
     }
 
-    public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(MenuGroup menuGroup) {
+    public static ExtractableResponse<Response> createMenuGroupRequest(MenuGroup menuGroup) {
         return RestAssured.given().log().all()
                 .body(menuGroup)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

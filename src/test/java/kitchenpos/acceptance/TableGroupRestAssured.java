@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 
 public class TableGroupRestAssured {
 
-    public static ExtractableResponse<Response> 단체_지정_요청(TableGroup tableGroup) {
+    public static ExtractableResponse<Response> groupRequest(TableGroup tableGroup) {
         return RestAssured
                 .given().log().all()
                 .body(tableGroup)
@@ -18,7 +18,7 @@ public class TableGroupRestAssured {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 단체_해제_요청(Long tableGroupId) {
+    public static ExtractableResponse<Response> unGroupRequest(Long tableGroupId) {
         return RestAssured
                 .given().log().all()
                 .when().delete("/api/table-groups/{tableGroupId}", tableGroupId)

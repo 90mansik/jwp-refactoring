@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 
 public class OrderRestAssured {
 
-    public static ExtractableResponse<Response> 주문_생성_요청(Order order) {
+    public static ExtractableResponse<Response> createOrderRequest(Order order) {
         return RestAssured
                 .given().log().all()
                 .body(order)
@@ -18,7 +18,7 @@ public class OrderRestAssured {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_목록_조회_요청() {
+    public static ExtractableResponse<Response> selectOrdersRequest() {
         return RestAssured
                 .given().log().all()
                 .when().get("/api/orders")
@@ -26,7 +26,7 @@ public class OrderRestAssured {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_상태_변경_요청(Long orderId, Order order) {
+    public static ExtractableResponse<Response> changeOrderStatus(Long orderId, Order order) {
         return RestAssured
                 .given().log().all()
                 .body(order)

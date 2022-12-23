@@ -14,13 +14,13 @@ import static kitchenpos.domain.MenuTestFixture.createMenu;
 
 public class MenuRestAssured {
 
-    public static ExtractableResponse<Response> 메뉴_생성_요청(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public static ExtractableResponse<Response> createMenuRequest(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         Menu menus = createMenu(id, name, price, menuGroupId, menuProducts);
 
-        return 메뉴_생성_요청(menus);
+        return createMenuRequest(menus);
     }
 
-    public static ExtractableResponse<Response> 메뉴_생성_요청(Menu menus) {
+    public static ExtractableResponse<Response> createMenuRequest(Menu menus) {
 
         return RestAssured.given().log().all()
                 .body(menus)
@@ -30,7 +30,7 @@ public class MenuRestAssured {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 메뉴_목록_조회_요청() {
+    public static ExtractableResponse<Response> selectMenusRequest() {
         return RestAssured.given().log().all()
                 .when().get("/api/menus")
                 .then().log().all()

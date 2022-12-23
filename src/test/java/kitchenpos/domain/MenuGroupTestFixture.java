@@ -9,4 +9,5 @@ public class MenuGroupTestFixture {
     public static MenuGroup createMenuGroup(String name) {
         return MenuGroup.of(null, name);
     }
+
 }

@@ -23,7 +23,7 @@ public class PriceTest {
         // when
         Price menuPrice = Price.from(price);
         // then
-        assertThat(menuPrice.getPrice()).isEqualTo(price);
+        assertThat(menuPrice.value()).isEqualTo(price);
     }
 
     @ParameterizedTest(name = "가격이 0보다 작으면 에러 발생")

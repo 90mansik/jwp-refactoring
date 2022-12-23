@@ -19,7 +19,7 @@ public class NameTest {
         // when
         Name name = Name.from(actualName);
         // then
-        assertThat(actualName).isEqualTo(name.getName());
+        assertThat(actualName).isEqualTo(name.value());
     }
 
     @DisplayName("이름에 Null 값을 넣으면 에러가 발생한다.")

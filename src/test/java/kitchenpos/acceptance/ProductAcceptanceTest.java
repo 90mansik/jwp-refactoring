@@ -21,36 +21,42 @@ public class ProductAcceptanceTest extends AbstractAcceptanceTest {
 
     @DisplayName("상품을 생성")
     @Test
-    void 상품_생성() {
+    void createProduct() {
         //when
-        ExtractableResponse<Response> response = 상품_생성_요청(1L, "허니콤보", BigDecimal.valueOf(18000));
+        ExtractableResponse<Response> response = 상품_생성_요청("허니콤보", BigDecimal.valueOf(18000));
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     @DisplayName("상품 목록을 조회")
     @Test
-    void 상품_목록_조회() {
+    void selectProducts() {
         // given
-        ExtractableResponse<Response> response1 = 상품_생성_요청(1L, "허니콤보", BigDecimal.valueOf(18000));
-        ExtractableResponse<Response> response2 = 상품_생성_요청(2L, "레드윙", BigDecimal.valueOf(190000));
+        ExtractableResponse<Response> response1 = 상품_생성_요청("허니콤보", BigDecimal.valueOf(18000));
+        ExtractableResponse<Response> response2 = 상품_생성_요청("레드윙", BigDecimal.valueOf(190000));
         // when
         ExtractableResponse<Response> result = 상품_목록_조회_요청();
+
+        List<Long> expectedProductIds = getExpectedProductIds(Arrays.asList(response1, response2));
+
+        List<Long> resultProductIds = getResultProductIds(result);
+
         // then
         assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
-        상품_목록_포함_확인(result, Arrays.asList(response1, response2));
-    }
-
-
-    private static void 상품_목록_포함_확인(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> responses) {
-        List<Long> expectedProductIds = responses.stream()
-                .map(it -> Long.parseLong(it.header("Location").split("/")[3]))
-                .collect(Collectors.toList());
-
-        List<Long> resultProductIds = response.jsonPath().getList(".", Product.class).stream()
-                .map(Product::getId)
-                .collect(Collectors.toList());
-
         assertThat(resultProductIds).containsAll(expectedProductIds);
     }
+
+
+    private static List<Long> getExpectedProductIds(List<ExtractableResponse<Response>> responses) {
+        return responses.stream()
+                .map(it -> Long.parseLong(it.header("Location").split("/")[3]))
+                .collect(Collectors.toList());
+    }
+
+    private static List<Long> getResultProductIds(ExtractableResponse<Response> response) {
+        return response.jsonPath().getList(".", Product.class).stream()
+                .map(Product::getId)
+                .collect(Collectors.toList());
+    }
+
 }

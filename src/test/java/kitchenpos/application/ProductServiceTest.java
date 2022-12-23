@@ -1,7 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRepository;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static kitchenpos.domain.ProductTestFixture.createProduct;
+import static kitchenpos.domain.ProductTestFixture.createProductRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
@@ -23,70 +26,79 @@ import static org.mockito.Mockito.when;
 @DisplayName("상품 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
-
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
 
-    private Product 허니콤보;
-    private Product 레드윙;
+    private Product frenchFries;
+    private Product cola;
 
     @BeforeEach
     void setUp() {
-        허니콤보 = createProduct(1L, "허니콤보", BigDecimal.valueOf(18000));
-        레드윙 = createProduct(2L, "레드윙", BigDecimal.valueOf(19000));
+        frenchFries = createProduct(1L, "frenchFries", BigDecimal.valueOf(18000));
+        cola = createProduct(2L, "cola", BigDecimal.valueOf(19000));
     }
 
     @DisplayName("상품을 생성한다.")
     @Test
-    void 상품_생성() {
+    void createProductTest() {
+
         // given
-        when(productDao.save(허니콤보)).thenReturn(허니콤보);
+        ProductRequest productRequest = createProductRequest(frenchFries.getName(), frenchFries.getPrice());
+        Product product = productRequest.toProduct();
+        when(productRepository.save(product)).thenReturn(frenchFries);
+
         // when
-        Product result = productService.create(허니콤보);
+        ProductResponse productResponse = productService.create(productRequest);
         // then
         assertAll(
-                () -> assertThat(result.getName()).isEqualTo(허니콤보.getName()),
-                () -> assertThat(result.getPrice()).isEqualTo(허니콤보.getPrice())
+                () -> assertThat(productResponse.getId()).isNotNull(),
+                () -> assertThat(productResponse.getName()).isEqualTo(frenchFries.getName().value()),
+                () -> assertThat(productResponse.getPrice()).isEqualTo(frenchFries.getPrice().value())
         );
+
     }
 
     @DisplayName("상품의 전체 목록을 조회한다.")
     @Test
     void 상품_전체_목록_조회() {
         // given
-        List<Product> products = Arrays.asList(허니콤보, 레드윙);
-        when(productDao.findAll()).thenReturn(products);
+        List<Product> products = Arrays.asList(frenchFries, cola);
+        when(productRepository.findAll()).thenReturn(products);
         // when
-        List<Product> findProducts = productService.list();
+        List<ProductResponse> findProducts = productService.list();
         // then
         assertAll(
                 () -> assertThat(findProducts).hasSize(products.size()),
-                () -> assertThat(findProducts).containsExactly(허니콤보, 레드윙)
+                () -> assertThat(findProducts.stream().map(ProductResponse::getName))
+                        .containsExactly(
+                                frenchFries.getName().value(),
+                                cola.getName().value()
+                        )
         );
     }
 
-    @DisplayName("가격이 비어있는 상품 등록은 예외 발생")
+    @DisplayName("가격이 0원 미만이면 예외 발생")
     @Test
-    void 상품_생성_예외_테스트1() {
+    void isValidPriceIsNegative() {
         // given
-        Product product = createProduct(3L, "콜라", BigDecimal.valueOf(-1));
+        ProductRequest productRequest = createProductRequest(cola.getName().value(), BigDecimal.valueOf(-1000));
         // when
         Assertions.assertThatThrownBy(
-                () -> productService.create(product)
+                () -> productService.create(productRequest)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("가격에 null이 들어가있을 시 예외 발생")
     @Test
-    void 상품_생성_예외_테스트2() {
+    void isValidPriceIsNull() {
         // given
-        Product product = createProduct(3L, "콜라", null);
+        ProductRequest productRequest = createProductRequest(cola.getName().value(), null);
         // when
         Assertions.assertThatThrownBy(
-                () -> productService.create(product)
+                () -> productService.create(productRequest)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 

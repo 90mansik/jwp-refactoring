@@ -10,6 +10,7 @@ import java.util.Objects;
 @Embeddable
 public class Price {
 
+    public static final Price ZERO_PRICE = Price.from(BigDecimal.ZERO);
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal price;
 
@@ -17,13 +18,12 @@ public class Price {
     }
 
     private Price(BigDecimal price) {
+        isValidPriceIsNull(price);
+        isValidPriceIsNegative(price);
         this.price = price;
     }
 
     public static Price from(BigDecimal price) {
-        isValidPriceIsNull(price);
-        isValidPriceIsNegative(price);
-
         return new Price(price);
     }
 
@@ -43,7 +43,14 @@ public class Price {
         return this.price.compareTo(price);
     }
 
-    public BigDecimal getPrice() {
+    public Price multiply(Quantity quantity){
+        return new Price(price.multiply(quantity.toBigDecimal()));
+    }
+    public Price add(Price addPrice) {
+        return new Price(this.price.add(addPrice.price));
+    }
+
+    public BigDecimal value() {
         return price;
     }
 

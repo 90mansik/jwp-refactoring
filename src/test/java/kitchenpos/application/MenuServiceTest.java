@@ -3,11 +3,7 @@ package kitchenpos.application;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,80 +34,79 @@ public class MenuServiceTest {
     private MenuDao menuDao;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
-
-    @Mock
     private MenuProductDao menuProductDao;
 
     @Mock
-    private ProductDao productDao;
+    private MenuGroupDao menuGroupDao;
+
+    @Mock
+    private ProductRepository productRepository;
 
     @InjectMocks
     private MenuService menuService;
 
-    private Product 허니콤보;
-    private Product 치즈버거;
-    private Product 콜라;
-    private MenuGroup 치킨세트;
+    private Product honeyCombo;
+    private Product cheeseBurger;
+    private Product cola;
+    private MenuGroup chickenSet;
 
-    private MenuGroup 햄버거세트;
-    private MenuProduct 허니콤보상품;
-    private MenuProduct 콜라상품;
+    private MenuGroup burgerProduct;
+    private MenuProduct honeyComboProduct;
+    private MenuProduct colaProduct;
 
-    private MenuProduct 치즈버거상품;
-    private Menu 허니콤보세트;
+    private MenuProduct cheeseBurgerProduct;
 
-    private Menu 치즈버거세트;
-
+    private Menu honeyComboSet;
+    private Menu cheeseBurgerSet;
 
     @BeforeEach
     void setUp() {
         // 상품
-        허니콤보 = createProduct(1L, "허니콤보", BigDecimal.valueOf(18000));
-        콜라 = createProduct(2L, "콜라", BigDecimal.valueOf(3000));
-        치즈버거 = createProduct(3L, "치즈버거", BigDecimal.valueOf(6000));
+        honeyCombo = createProduct(1L, "honeyCombo", BigDecimal.valueOf(18000));
+        cola = createProduct(2L, "cola", BigDecimal.valueOf(3000));
+        cheeseBurger = createProduct(3L, "cheeseBurger", BigDecimal.valueOf(6000));
 
         // 메뉴그룹
-        치킨세트 = createMenuGroup(1L, "치킨세트");
-        햄버거세트 = createMenuGroup(2L, "햄버거세트");
+        chickenSet = createMenuGroup(1L, "chickenSet");
+        burgerProduct = createMenuGroup(2L, "burgerProduct");
 
         // 메뉴 상품
-        허니콤보상품 = createMenuProduct(1L, null, 허니콤보.getId(), 1L);
-        콜라상품 = createMenuProduct(2L, null, 콜라.getId(), 1L);
-        치즈버거상품 = createMenuProduct(3L, null, 치즈버거.getId(), 1L);
+        honeyComboProduct = createMenuProduct(1L, null, honeyCombo.getId(), 1L);
+        colaProduct = createMenuProduct(2L, null, cola.getId(), 1L);
+        cheeseBurgerProduct = createMenuProduct(3L, null, cheeseBurger.getId(), 1L);
 
 
-        허니콤보세트 = createMenu(1L, "허니콤보세트", BigDecimal.valueOf(20000), 치킨세트.getId(), Arrays.asList(허니콤보상품, 콜라상품));
-        치즈버거세트 = createMenu(2L, "치즈버거세트", BigDecimal.valueOf(8000), 햄버거세트.getId(), Arrays.asList(치즈버거상품, 콜라상품));
+        honeyComboSet = createMenu(1L, "honeyComboSet", BigDecimal.valueOf(20000), chickenSet.getId(), Arrays.asList(honeyComboProduct, colaProduct));
+        cheeseBurgerSet = createMenu(2L, "cheeseBurgerSet", BigDecimal.valueOf(8000), burgerProduct.getId(), Arrays.asList(cheeseBurgerProduct, colaProduct));
     }
 
     @DisplayName("메뉴를 생성한다.")
     @Test
-    void 메뉴_생성() {
+    void createMenus() {
         // given
-        when(menuGroupDao.existsById(허니콤보세트.getMenuGroupId())).thenReturn(true);
-        when(productDao.findById(허니콤보상품.getProductId())).thenReturn(Optional.of(허니콤보));
-        when(productDao.findById(콜라상품.getProductId())).thenReturn(Optional.of(콜라));
-        when(menuDao.save(허니콤보세트)).thenReturn(허니콤보세트);
-        when(menuProductDao.save(허니콤보상품)).thenReturn(허니콤보상품);
-        when(menuProductDao.save(콜라상품)).thenReturn(콜라상품);
+        when(menuGroupDao.existsById(honeyComboSet.getMenuGroupId())).thenReturn(true);
+        when(productRepository.findById(honeyComboProduct.getProductId())).thenReturn(Optional.of(honeyCombo));
+        when(productRepository.findById(colaProduct.getProductId())).thenReturn(Optional.of(cola));
+        when(menuDao.save(honeyComboSet)).thenReturn(honeyComboSet);
+        when(menuProductDao.save(honeyComboProduct)).thenReturn(honeyComboProduct);
+        when(menuProductDao.save(colaProduct)).thenReturn(colaProduct);
         // when
-        Menu saveMenu = menuService.create(허니콤보세트);
+        Menu saveMenu = menuService.create(honeyComboSet);
         // then
         assertAll(
                 () -> assertThat(saveMenu.getId()).isNotNull(),
-                () -> assertThat(saveMenu.getMenuProducts()).containsExactly(허니콤보상품, 콜라상품)
+                () -> assertThat(saveMenu.getMenuProducts()).containsExactly(honeyComboProduct, colaProduct)
         );
     }
 
     @DisplayName("메뉴 전체 목록을 조회한다.")
     @Test
-    void 메뉴_전체_목록_조회() {
+    void selectAllMenus() {
         // given
-        List<Menu> menus = Arrays.asList(치즈버거세트, 허니콤보세트);
+        List<Menu> menus = Arrays.asList(cheeseBurgerSet, honeyComboSet);
         when(menuDao.findAll()).thenReturn(menus);
-        when(menuProductDao.findAllByMenuId(치즈버거세트.getId())).thenReturn(Arrays.asList(치즈버거상품, 콜라상품));
-        when(menuProductDao.findAllByMenuId(허니콤보세트.getId())).thenReturn(Arrays.asList(허니콤보상품, 콜라상품));
+        when(menuProductDao.findAllByMenuId(cheeseBurgerSet.getId())).thenReturn(Arrays.asList(cheeseBurgerProduct, colaProduct));
+        when(menuProductDao.findAllByMenuId(honeyComboSet.getId())).thenReturn(Arrays.asList(honeyComboProduct, colaProduct));
 
         // when
         List<Menu> findMenus = menuService.list();
@@ -119,29 +114,26 @@ public class MenuServiceTest {
         // then
         assertAll(
                 () -> assertThat(findMenus).hasSize(menus.size()),
-                () -> assertThat(findMenus).containsExactly(치즈버거세트, 허니콤보세트)
+                () -> assertThat(findMenus).containsExactly(cheeseBurgerSet, honeyComboSet)
         );
     }
 
     @DisplayName("가격이 0원 미만인 메뉴는 생성할 수 없다.")
     @Test
-    void 메뉴_생성_예외1() {
-        // given
-        Menu menu = createMenu(1L, "치즈버거세트", BigDecimal.valueOf(-1000), 햄버거세트.getId(), Arrays.asList(치즈버거상품, 콜라상품));
-
+    void isValidPriceNegative() {
         // when & then
         Assertions.assertThatThrownBy(
-                () -> menuService.create(menu)
+                () -> menuService.create(createMenu(1L, "cheeseBurgerSet", BigDecimal.valueOf(-1000), burgerProduct.getId(), Arrays.asList(cheeseBurgerProduct, colaProduct)))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("존재하는 메뉴 그룹에 속하지 않은 메뉴는 생성할 수 없다.")
     @Test
-    void 메뉴_생성_예외2() {
+    void isValidMenoContain() {
         // given
-        Menu menu = createMenu(1L, "치즈버거세트", BigDecimal.valueOf(8000L), 햄버거세트.getId(), singletonList(콜라상품));
-        when(menuGroupDao.existsById(치즈버거세트.getMenuGroupId())).thenReturn(true);
-        when(productDao.findById(콜라상품.getProductId())).thenReturn(Optional.empty());
+        Menu menu = createMenu(1L, "cheeseBurgerSet", BigDecimal.valueOf(8000L), burgerProduct.getId(), singletonList(colaProduct));
+        when(menuGroupDao.existsById(cheeseBurgerSet.getMenuGroupId())).thenReturn(true);
+        when(productRepository.findById(colaProduct.getProductId())).thenReturn(Optional.empty());
         // when & then
         Assertions.assertThatThrownBy(
                 () -> menuService.create(menu)
@@ -150,9 +142,9 @@ public class MenuServiceTest {
 
     @DisplayName("메뉴 가격은 해당 메뉴에 존재하는 메뉴 상품들의 가격의 합보다 클 수 없다.")
     @Test
-    void 메뉴_생성_예외3() {
+    void isValidOverPrice() {
         // given
-        Menu menu = createMenu(1L, "치즈버거세트", BigDecimal.valueOf(9000L), 햄버거세트.getId(), Arrays.asList(치즈버거상품, 콜라상품));
+        Menu menu = createMenu(1L, "cheeseBurgerSet", BigDecimal.valueOf(9000L), burgerProduct.getId(), Arrays.asList(cheeseBurgerProduct, colaProduct));
         // when && then
         Assertions.assertThatThrownBy(
                 () -> menuService.create(menu)

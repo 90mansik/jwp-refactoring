@@ -20,21 +20,21 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("주문 테이블 관련 인수 테스트")
 public class TableAcceptanceTest extends AbstractAcceptanceTest {
-    private OrderTable 주문테이블1;
-    private OrderTable 주문테이블2;
+    private OrderTable orderTable1;
+    private OrderTable orderTable2;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        주문테이블1 = createOrderTable(null, null, 5, false);
-        주문테이블2 = createOrderTable(null, null, 4, false);
+        orderTable1 = createOrderTable(null, null, 5, false);
+        orderTable2 = createOrderTable(null, null, 4, false);
     }
 
     @DisplayName("주문 테이블을 생성한다.")
     @Test
     void 주문_테이블_생성() {
         // when
-        ExtractableResponse<Response> response = createOrderTableRequest(주문테이블1);
+        ExtractableResponse<Response> response = createOrderTableRequest(orderTable1);
         // then
         주문_테이블_생성됨(response);
     }
@@ -43,8 +43,8 @@ public class TableAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     void 주문_테이블_전체_목록_조회() {
         // given
-        ExtractableResponse<Response> response1 = createOrderTableRequest(주문테이블1);
-        ExtractableResponse<Response> response2 = createOrderTableRequest(주문테이블2);
+        ExtractableResponse<Response> response1 = createOrderTableRequest(orderTable1);
+        ExtractableResponse<Response> response2 = createOrderTableRequest(orderTable2);
         // when
         ExtractableResponse<Response> response = selectOrderTablesRequest();
         // then
@@ -56,7 +56,7 @@ public class TableAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     void 주문테이블_상태_변경() {
         // given
-        OrderTable orderTable = createOrderTableRequest(주문테이블1).as(OrderTable.class);
+        OrderTable orderTable = createOrderTableRequest(orderTable1).as(OrderTable.class);
         boolean isEmpty = orderTable.isEmpty();
         OrderTable changeOrderTable = createOrderTable(null, null, orderTable.getNumberOfGuests(), !isEmpty);
         // when
@@ -70,7 +70,7 @@ public class TableAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     void 주문테이블_방문자수_변경() {
         // given
-        OrderTable orderTable = createOrderTableRequest(주문테이블1).as(OrderTable.class);
+        OrderTable orderTable = createOrderTableRequest(orderTable1).as(OrderTable.class);
         int expectNumberOfGuests = 15;
         OrderTable changeOrderTable = createOrderTable(null, null, expectNumberOfGuests, orderTable.isEmpty());
         // when

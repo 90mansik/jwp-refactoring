@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static kitchenpos.acceptance.ProductRestAssured.selectProductsRequest;
-import static kitchenpos.acceptance.ProductRestAssured.createProductRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("상품 관련 인수 테스트")

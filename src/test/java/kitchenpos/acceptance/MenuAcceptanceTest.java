@@ -28,29 +28,26 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("메뉴 관련 인수 테스트")
 public class MenuAcceptanceTest extends AbstractAcceptanceTest {
-    private Product 불고기버거;
-    private Product 치즈버거;
-    private Product 콜라;
-    private MenuGroup 햄버거세트;
-    private MenuProduct 불고기버거상품;
-    private MenuProduct 콜라상품;
+    private Product beefBurger;
+    private Product cheeseBurger;
+    private Product coke;
+    private MenuGroup burgerSet;
+    private MenuProduct beefBurgerProduct;
+    private MenuProduct cokeProduct;
+    private MenuProduct cheeseBurgerProduct;
 
-    private MenuProduct 치즈버거상품;
-    private Menu 불고기버거세트;
-
-    private Menu 치즈버거세트;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        햄버거세트 = createMenuGroupRequest(createMenuGroup("햄버거세트")).as(MenuGroup.class);
-        치즈버거 = createProductRequest(createProduct(null, "치즈버거", BigDecimal.valueOf(6000))).as(Product.class);
-        불고기버거 = createProductRequest(createProduct(null, "불고기버거", BigDecimal.valueOf(5000))).as(Product.class);
-        콜라 = createProductRequest(createProduct(null, "콜라", BigDecimal.valueOf(3000))).as(Product.class);
-        치즈버거상품 = createMenuProduct(1L, null, 치즈버거.getId(), 1L);
-        콜라상품 = createMenuProduct(2L, null, 콜라.getId(), 1L);
-        불고기버거상품 = createMenuProduct(3L, null, 불고기버거.getId(), 1L);
+        burgerSet = createMenuGroupRequest(createMenuGroup("햄버거세트")).as(MenuGroup.class);
+        cheeseBurger = createProductRequest(createProduct(null, "치즈버거", BigDecimal.valueOf(6000))).as(Product.class);
+        beefBurger = createProductRequest(createProduct(null, "불고기버거", BigDecimal.valueOf(5000))).as(Product.class);
+        coke = createProductRequest(createProduct(null, "콜라", BigDecimal.valueOf(3000))).as(Product.class);
+        cheeseBurgerProduct = createMenuProduct(1L, null, cheeseBurger.getId(), 1L);
+        cokeProduct = createMenuProduct(2L, null, coke.getId(), 1L);
+        beefBurgerProduct = createMenuProduct(3L, null, beefBurger.getId(), 1L);
 
     }
 
@@ -58,7 +55,7 @@ public class MenuAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     void 메뉴_생성() {
         // when
-        ExtractableResponse<Response> response = MenuRestAssured.createMenuRequest(1L, "불고기버거세트", BigDecimal.valueOf(7500), 햄버거세트.getId(), Arrays.asList(불고기버거상품, 콜라상품));
+        ExtractableResponse<Response> response = MenuRestAssured.createMenuRequest(1L, "불고기버거세트", BigDecimal.valueOf(7500), burgerSet.getId(), Arrays.asList(beefBurgerProduct, cokeProduct));
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
@@ -67,8 +64,8 @@ public class MenuAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     void 상품_전체_목록_조회() {
         // given
-        ExtractableResponse<Response> response1 = MenuRestAssured.createMenuRequest(1L, "불고기버거세트", BigDecimal.valueOf(7500), 햄버거세트.getId(), Arrays.asList(불고기버거상품, 콜라상품));
-        ExtractableResponse<Response> response2 = MenuRestAssured.createMenuRequest(2L, "치즈버거세트", BigDecimal.valueOf(8000), 햄버거세트.getId(), Arrays.asList(치즈버거상품, 콜라상품));
+        ExtractableResponse<Response> response1 = MenuRestAssured.createMenuRequest(1L, "불고기버거세트", BigDecimal.valueOf(7500), burgerSet.getId(), Arrays.asList(beefBurgerProduct, cokeProduct));
+        ExtractableResponse<Response> response2 = MenuRestAssured.createMenuRequest(2L, "치즈버거세트", BigDecimal.valueOf(8000), burgerSet.getId(), Arrays.asList(cheeseBurgerProduct, cokeProduct));
         // when
         ExtractableResponse<Response> menuResponse = selectMenusRequest();
         // then
@@ -77,7 +74,7 @@ public class MenuAcceptanceTest extends AbstractAcceptanceTest {
                 () -> 메뉴_목록_포함_확인(menuResponse, Arrays.asList(response1, response2))
         );
     }
-
+    
     private static void 메뉴_목록_포함_확인(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> responses) {
         List<Long> expectedMenuIds = responses.stream()
                 .map(it -> Long.parseLong(it.header("Location").split("/")[3]))

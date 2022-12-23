@@ -31,51 +31,51 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("주문 관련 인수 테스트")
 public class OrderAcceptanceTest extends AbstractAcceptanceTest {
-    private Product 감자튀김;
-    private Product 불고기버거;
-    private Product 치킨버거;
-    private Product 콜라;
-    private MenuGroup 햄버거세트;
-    private MenuProduct 감자튀김상품;
-    private MenuProduct 불고기버거상품;
-    private MenuProduct 치킨버거상품;
-    private MenuProduct 콜라상품;
-    private Menu 불고기버거세트;
-    private Menu 치킨버거세트;
-    private OrderTable 주문테이블1;
-    private OrderTable 주문테이블2;
-    private OrderLineItem 불고기버거세트주문;
-    private OrderLineItem 치킨버거세트주문;
-    private Order 주문1;
-    private Order 주문2;
+    private Product frenchFries;
+    private Product beefBurger;
+    private Product chickenBurger;
+    private Product coke;
+    private MenuGroup burgerSet;
+    private MenuProduct frenchFriesProduct;
+    private MenuProduct beefBurgerProduct;
+    private MenuProduct chickenBurgerProduct;
+    private MenuProduct cokeProduct;
+    private Menu beefBurgerSet;
+    private Menu chickenBurgerSet;
+    private OrderTable orderTable1;
+    private OrderTable orderTable2;
+    private OrderLineItem beefBurgerSetOrder;
+    private OrderLineItem chickenBurgerSetOrder;
+    private Order order1;
+    private Order order2;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        햄버거세트 = createMenuGroupRequest(createMenuGroup("햄버거세트")).as(MenuGroup.class);
-        감자튀김 = createProductRequest(createProduct(null, "감자튀김", BigDecimal.valueOf(3000L))).as(Product.class);
-        콜라 = createProductRequest(createProduct(null, "콜라", BigDecimal.valueOf(1500L))).as(Product.class);
-        불고기버거 = createProductRequest(createProduct(null, "불고기버거", BigDecimal.valueOf(4000L))).as(Product.class);
-        치킨버거 = createProductRequest(createProduct(null, "치킨버거", BigDecimal.valueOf(4500L))).as(Product.class);
-        감자튀김상품 = createMenuProduct(1L, null, 감자튀김.getId(), 1L);
-        콜라상품 = createMenuProduct(2L, null, 콜라.getId(), 1L);
-        불고기버거상품 = createMenuProduct(3L, null, 불고기버거.getId(), 1L);
-        치킨버거상품 = createMenuProduct(3L, null, 치킨버거.getId(), 1L);
-        불고기버거세트 = createMenuRequest(createMenu(null, "불고기버거세트", BigDecimal.valueOf(8500L), 햄버거세트.getId(), Arrays.asList(감자튀김상품, 콜라상품, 불고기버거상품))).as(Menu.class);
-        치킨버거세트 = createMenuRequest(createMenu(null, "치킨버거세트", BigDecimal.valueOf(9000L), 햄버거세트.getId(), Arrays.asList(감자튀김상품, 콜라상품, 치킨버거상품))).as(Menu.class);
-        주문테이블1 = createOrderTableRequest(createOrderTable(null, null, 5, false)).as(OrderTable.class);
-        주문테이블2 = createOrderTableRequest(createOrderTable(null, null, 4, false)).as(OrderTable.class);
-        불고기버거세트주문 = createOrderLineItem(1L, null, 불고기버거세트.getId(), 2);
-        치킨버거세트주문 = createOrderLineItem(2L, null, 치킨버거세트.getId(), 1);
-        주문1 = createOrder(주문테이블1.getId(), null, null, Arrays.asList(불고기버거세트주문, 치킨버거세트주문));
-        주문2 = createOrder(주문테이블2.getId(), null, null, singletonList(불고기버거세트주문));
+        burgerSet = createMenuGroupRequest(createMenuGroup("햄버거세트")).as(MenuGroup.class);
+        frenchFries = createProductRequest(createProduct(null, "감자튀김", BigDecimal.valueOf(3000L))).as(Product.class);
+        coke = createProductRequest(createProduct(null, "콜라", BigDecimal.valueOf(1500L))).as(Product.class);
+        beefBurger = createProductRequest(createProduct(null, "불고기버거", BigDecimal.valueOf(4000L))).as(Product.class);
+        chickenBurger = createProductRequest(createProduct(null, "치킨버거", BigDecimal.valueOf(4500L))).as(Product.class);
+        frenchFriesProduct = createMenuProduct(1L, null, frenchFries.getId(), 1L);
+        cokeProduct = createMenuProduct(2L, null, coke.getId(), 1L);
+        beefBurgerProduct = createMenuProduct(3L, null, beefBurger.getId(), 1L);
+        chickenBurgerProduct = createMenuProduct(3L, null, chickenBurger.getId(), 1L);
+        beefBurgerSet = createMenuRequest(createMenu(null, "불고기버거세트", BigDecimal.valueOf(8500L), burgerSet.getId(), Arrays.asList(frenchFriesProduct, cokeProduct, beefBurgerProduct))).as(Menu.class);
+        chickenBurgerSet = createMenuRequest(createMenu(null, "치킨버거세트", BigDecimal.valueOf(9000L), burgerSet.getId(), Arrays.asList(frenchFriesProduct, cokeProduct, chickenBurgerProduct))).as(Menu.class);
+        orderTable1 = createOrderTableRequest(createOrderTable(null, null, 5, false)).as(OrderTable.class);
+        orderTable2 = createOrderTableRequest(createOrderTable(null, null, 4, false)).as(OrderTable.class);
+        beefBurgerSetOrder = createOrderLineItem(1L, null, beefBurgerSet.getId(), 2);
+        chickenBurgerSetOrder = createOrderLineItem(2L, null, chickenBurgerSet.getId(), 1);
+        order1 = createOrder(orderTable1.getId(), null, null, Arrays.asList(beefBurgerSetOrder, chickenBurgerSetOrder));
+        order2 = createOrder(orderTable2.getId(), null, null, singletonList(beefBurgerSetOrder));
     }
 
     @DisplayName("주문을 생성한다.")
     @Test
     void 주문_생성() {
         // when
-        ExtractableResponse<Response> response = createOrderRequest(주문1);
+        ExtractableResponse<Response> response = createOrderRequest(order1);
         // then
         주문_생성됨(response);
     }
@@ -84,8 +84,8 @@ public class OrderAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     void 주문_목록_전체_조회() {
         // given
-        ExtractableResponse<Response> response1 = createOrderRequest(주문1);
-        ExtractableResponse<Response> response2 = createOrderRequest(주문2);
+        ExtractableResponse<Response> response1 = createOrderRequest(order1);
+        ExtractableResponse<Response> response2 = createOrderRequest(order2);
         // when
         ExtractableResponse<Response> response = selectOrdersRequest();
         // then
@@ -98,7 +98,7 @@ public class OrderAcceptanceTest extends AbstractAcceptanceTest {
     void 주문_상태_변경() {
         // given
         String expectOrderStatus = OrderStatus.MEAL.name();
-        Order order = createOrderRequest(주문1).as(Order.class);
+        Order order = createOrderRequest(order1).as(Order.class);
         Order changeOrder = createOrder(order.getOrderTableId(), expectOrderStatus, order.getOrderedTime(), order.getOrderLineItems());
         // when
         ExtractableResponse<Response> response = changeOrderStatus(order.getId(), changeOrder);

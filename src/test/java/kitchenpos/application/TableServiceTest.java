@@ -44,8 +44,8 @@ public class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        orderTable1 = createOrderTable(1L, null, 5, false);
-        orderTable2 = createOrderTable(2L, null, 4, false);
+        orderTable1 = createOrderTable( 5, false);
+        orderTable2 = createOrderTable( 4, false);
     }
 
     @DisplayName("주문 테이블을 생성한다.")
@@ -85,7 +85,7 @@ public class TableServiceTest {
     void 주문_테이블_상태_변경() {
         // given
         boolean isEmpty = orderTable1.isEmpty();
-        OrderTable changeOrderTable = createOrderTable(null, null, orderTable1.getNumberOfGuests(), !isEmpty);
+        OrderTable changeOrderTable = createOrderTable(orderTable1.getNumberOfGuests(), !isEmpty);
         when(orderTableDao.findById(orderTable1.getId())).thenReturn(Optional.of(orderTable1));
         when(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTable1.getId(),
                 Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
@@ -101,7 +101,7 @@ public class TableServiceTest {
     @ValueSource(ints = {2, 3, 7})
     void 주문_테이블_방문한자수_변경(int expectNumberOfGuests) {
         // given
-        OrderTable changeOrderTable = createOrderTable(null, null, expectNumberOfGuests, orderTable1.isEmpty());
+        OrderTable changeOrderTable = createOrderTable(expectNumberOfGuests, orderTable1.isEmpty());
         when(orderTableDao.findById(orderTable1.getId())).thenReturn(Optional.of(orderTable1));
         when(orderTableDao.save(orderTable1)).thenReturn(orderTable1);
         // when
@@ -115,7 +115,7 @@ public class TableServiceTest {
     void 주문_테이블_상태_변경_예외1() {
         // given
         boolean isEmpty = orderTable1.isEmpty();
-        OrderTable changeOrderTable = createOrderTable(null, null, orderTable1.getNumberOfGuests(), !isEmpty);
+        OrderTable changeOrderTable = createOrderTable(orderTable1.getNumberOfGuests(), !isEmpty);
         when(orderTableDao.findById(10L)).thenReturn(Optional.empty());
         // when & then
         Assertions.assertThatThrownBy(
@@ -127,9 +127,9 @@ public class TableServiceTest {
     @Test
     void 주문_테이블_상태_변경_예외2() {
         // given
-        OrderTable orderTable = createOrderTable(5L, 1L, 4, false);
-        OrderTable changeOrderTable = createOrderTable(null, null, orderTable1.getNumberOfGuests(), !orderTable.isEmpty());
-        when(orderTableDao.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
+        OrderTable orderTable = createOrderTable(4, false);
+        OrderTable changeOrderTable = createOrderTable( orderTable1.getNumberOfGuests(), !orderTable.isEmpty());
+        when(orderDao.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
         // when & then
         Assertions.assertThatThrownBy(
                 () -> tableService.changeEmpty(orderTable.getId(), changeOrderTable)
@@ -141,7 +141,7 @@ public class TableServiceTest {
     void 주문_테이블_상태_변경_예외3() {
         // given
         boolean isEmpty = orderTable1.isEmpty();
-        OrderTable changeOrderTable = createOrderTable(null, null, orderTable1.getNumberOfGuests(), !isEmpty);
+        OrderTable changeOrderTable = createOrderTable( orderTable1.getNumberOfGuests(), !isEmpty);
         when(orderTableDao.findById(orderTable1.getId())).thenReturn(Optional.of(orderTable1));
         when(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTable1.getId(),
                 Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
@@ -156,7 +156,7 @@ public class TableServiceTest {
     @ValueSource(ints = {-1, -3, -5})
     void 주문_테이블_방문한자수_변경_예외1(int expectNumberOfGuests) {
         // given
-        OrderTable changeOrderTable = createOrderTable(null, null, expectNumberOfGuests, orderTable1.isEmpty());
+        OrderTable changeOrderTable = createOrderTable(expectNumberOfGuests, orderTable1.isEmpty());
         // when & then
         Assertions.assertThatThrownBy(
                 () -> tableService.changeNumberOfGuests(orderTable1.getId(), changeOrderTable)
@@ -167,8 +167,8 @@ public class TableServiceTest {
     @Test
     void 주문_테이블_방문한자수_변경_예외2() {
         // given
-        OrderTable orderTable = createOrderTable(5L, 1L, 4, false);
-        OrderTable changeOrderTable = createOrderTable(null, null, 1, orderTable.isEmpty());
+        OrderTable orderTable = createOrderTable( 4, false);
+        OrderTable changeOrderTable = createOrderTable( 1, orderTable.isEmpty());
         when(orderTableDao.findById(orderTable.getId())).thenReturn(Optional.empty());
         // when & then
         Assertions.assertThatThrownBy(
@@ -180,8 +180,8 @@ public class TableServiceTest {
     @Test
     void 주문_테이블_방문한자수_변경_예외3() {
         // given
-        OrderTable orderTable = createOrderTable(5L, 1L, 4, true);
-        OrderTable changeOrderTable = createOrderTable(null, null, 1, orderTable.isEmpty());
+        OrderTable orderTable = createOrderTable( 4, true);
+        OrderTable changeOrderTable = createOrderTable( 1, orderTable.isEmpty());
         when(orderTableDao.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
         // when & then
         Assertions.assertThatThrownBy(

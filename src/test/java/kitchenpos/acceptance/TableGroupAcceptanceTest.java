@@ -4,6 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.OrderTableRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import static kitchenpos.acceptance.TableGroupRestAssured.groupRequest;
 import static kitchenpos.acceptance.TableGroupRestAssured.unGroupRequest;
 import static kitchenpos.acceptance.TableRestAssured.createOrderTableRequest;
 import static kitchenpos.domain.OrderTableTestFixture.createOrderTable;
+import static kitchenpos.domain.OrderTableTestFixture.setOrderTableRequest;
 import static kitchenpos.domain.TableGroupTestFixture.createTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -29,8 +31,8 @@ public class TableGroupAcceptanceTest extends AbstractAcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        orderTable1 = createOrderTableRequest(createOrderTable(null, null, 5, true)).as(OrderTable.class);
-        orderTable2 = createOrderTableRequest(createOrderTable(null, null, 4, true)).as(OrderTable.class);
+        orderTable1 = createOrderTableRequest(setOrderTableRequest( 5, true)).as(OrderTable.class);
+        orderTable2 = createOrderTableRequest(setOrderTableRequest(4, true)).as(OrderTable.class);
         group1 = createTableGroup(Arrays.asList(orderTable1, orderTable2));
     }
 

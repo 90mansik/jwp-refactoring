@@ -4,6 +4,7 @@ package kitchenpos.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,20 +15,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static kitchenpos.acceptance.TableRestAssured.*;
-import static kitchenpos.domain.OrderTableTestFixture.createOrderTable;
+import static kitchenpos.domain.OrderTableTestFixture.setOrderTableRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("주문 테이블 관련 인수 테스트")
 public class TableAcceptanceTest extends AbstractAcceptanceTest {
-    private OrderTable orderTable1;
-    private OrderTable orderTable2;
+    private OrderTableRequest orderTable1;
+    private OrderTableRequest orderTable2;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        orderTable1 = createOrderTable(null, null, 5, false);
-        orderTable2 = createOrderTable(null, null, 4, false);
+        orderTable1 =setOrderTableRequest(5, false);
+        orderTable2 =setOrderTableRequest( 4, false);
     }
 
     @DisplayName("주문 테이블을 생성한다.")
@@ -58,7 +59,7 @@ public class TableAcceptanceTest extends AbstractAcceptanceTest {
         // given
         OrderTable orderTable = createOrderTableRequest(orderTable1).as(OrderTable.class);
         boolean isEmpty = orderTable.isEmpty();
-        OrderTable changeOrderTable = createOrderTable(null, null, orderTable.getNumberOfGuests(), !isEmpty);
+        OrderTableRequest changeOrderTable = setOrderTableRequest(orderTable.getNumberOfGuests(), !isEmpty);
         // when
         ExtractableResponse<Response> response = changeOrderTableEmptyRequest(orderTable.getId(),
                 changeOrderTable);
@@ -72,7 +73,7 @@ public class TableAcceptanceTest extends AbstractAcceptanceTest {
         // given
         OrderTable orderTable = createOrderTableRequest(orderTable1).as(OrderTable.class);
         int expectNumberOfGuests = 15;
-        OrderTable changeOrderTable = createOrderTable(null, null, expectNumberOfGuests, orderTable.isEmpty());
+        OrderTableRequest changeOrderTable = setOrderTableRequest( expectNumberOfGuests, orderTable.isEmpty());
         // when
         ExtractableResponse<Response> response = changeOrderTableQuantityRequest(orderTable.getId(), changeOrderTable);
         // then

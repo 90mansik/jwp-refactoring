@@ -46,8 +46,8 @@ public class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        orderTable1 = createOrderTable(1L, null, 5, true);
-        orderTable2 = createOrderTable(2L, null, 4, true);
+        orderTable1 = createOrderTable( 5, true);
+        orderTable2 = createOrderTable(4, true);
         group1 = createTableGroup(1L, null, Arrays.asList(orderTable1, orderTable2));
     }
 
@@ -115,7 +115,7 @@ public class TableGroupServiceTest {
     @Test
     void 단체_생성_예외3() {
         // given
-        OrderTable orderTable = createOrderTable(null, null, 5, false);
+        OrderTable orderTable = createOrderTable( 5, false);
         TableGroup tableGroup = createTableGroup(3L, null, Arrays.asList(orderTable, orderTable1));
         when(orderTableDao.findAllByIdIn(Arrays.asList(orderTable.getId(), orderTable1.getId()))).thenReturn(
                 Arrays.asList(orderTable, orderTable1));
@@ -130,7 +130,7 @@ public class TableGroupServiceTest {
     @Test
     void 단체_생성_예외4() {
         // given
-        OrderTable orderTable = createOrderTable(null, 1L, 5, true);
+        OrderTable orderTable = createOrderTable(5, true);
         TableGroup tableGroup = createTableGroup(3L, null, Arrays.asList(orderTable, orderTable1));
         when(orderTableDao.findAllByIdIn(Arrays.asList(orderTable.getId(), orderTable1.getId()))).thenReturn(
                 Arrays.asList(orderTable, orderTable1));

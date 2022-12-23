@@ -11,4 +11,5 @@ public class TableGroupTestFixture {
     public static TableGroup createTableGroup(List<OrderTable> orderTables) {
         return TableGroup.of(null, null, orderTables);
     }
+
 }

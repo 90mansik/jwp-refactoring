@@ -2,6 +2,7 @@ package kitchenpos.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.dto.MenuGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,7 @@ public class MenuGroupAcceptanceTest {
     @Test
     void 메뉴_그룹_생성(){
         // when
-        ExtractableResponse<Response> response = MenuGroupRestAssured.createMenuGroupRequest(1L, "허니콤보세트");
+        ExtractableResponse<Response> response = MenuGroupRestAssured.createMenuGroupRequest(MenuGroupRequest.from("허니콤보세트") );
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }

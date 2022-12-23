@@ -3,6 +3,9 @@ package kitchenpos.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.*;
+import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,15 +38,15 @@ public class OrderAcceptanceTest extends AbstractAcceptanceTest {
     private Product beefBurger;
     private Product chickenBurger;
     private Product coke;
-    private MenuGroup burgerSet;
+    private MenuGroupResponse burgerSet;
     private MenuProduct frenchFriesProduct;
     private MenuProduct beefBurgerProduct;
     private MenuProduct chickenBurgerProduct;
     private MenuProduct cokeProduct;
     private Menu beefBurgerSet;
     private Menu chickenBurgerSet;
-    private OrderTable orderTable1;
-    private OrderTable orderTable2;
+    private OrderTableResponse orderTable1;
+    private OrderTableResponse orderTable2;
     private OrderLineItem beefBurgerSetOrder;
     private OrderLineItem chickenBurgerSetOrder;
     private Order order1;
@@ -52,7 +55,7 @@ public class OrderAcceptanceTest extends AbstractAcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        burgerSet = createMenuGroupRequest(createMenuGroup("햄버거세트")).as(MenuGroup.class);
+        burgerSet = createMenuGroupRequest(createMenuGroup("햄버거세트")).as(MenuGroupResponse.class);
         frenchFries = createProductRequest(createProduct(null, "감자튀김", BigDecimal.valueOf(3000L))).as(Product.class);
         coke = createProductRequest(createProduct(null, "콜라", BigDecimal.valueOf(1500L))).as(Product.class);
         beefBurger = createProductRequest(createProduct(null, "불고기버거", BigDecimal.valueOf(4000L))).as(Product.class);
@@ -63,8 +66,9 @@ public class OrderAcceptanceTest extends AbstractAcceptanceTest {
         chickenBurgerProduct = createMenuProduct(3L, null, chickenBurger.getId(), 1L);
         beefBurgerSet = createMenuRequest(createMenu(null, "불고기버거세트", BigDecimal.valueOf(8500L), burgerSet.getId(), Arrays.asList(frenchFriesProduct, cokeProduct, beefBurgerProduct))).as(Menu.class);
         chickenBurgerSet = createMenuRequest(createMenu(null, "치킨버거세트", BigDecimal.valueOf(9000L), burgerSet.getId(), Arrays.asList(frenchFriesProduct, cokeProduct, chickenBurgerProduct))).as(Menu.class);
-        orderTable1 = createOrderTableRequest(createOrderTable(null, null, 5, false)).as(OrderTable.class);
-        orderTable2 = createOrderTableRequest(createOrderTable(null, null, 4, false)).as(OrderTable.class);
+        //orderTable1 = createOrderTableRequest(createOrderTable(null, null, 5, false)).as(OrderTable.class);
+        orderTable1 = createOrderTableRequest(OrderTableRequest.of(5, false)).as(OrderTableResponse.class);
+        orderTable2 = createOrderTableRequest(OrderTableRequest.of(4, false)).as(OrderTableResponse.class);
         beefBurgerSetOrder = createOrderLineItem(1L, null, beefBurgerSet.getId(), 2);
         chickenBurgerSetOrder = createOrderLineItem(2L, null, chickenBurgerSet.getId(), 1);
         order1 = createOrder(orderTable1.getId(), null, null, Arrays.asList(beefBurgerSetOrder, chickenBurgerSetOrder));

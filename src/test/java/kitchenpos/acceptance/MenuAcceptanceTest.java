@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 
 import static kitchenpos.acceptance.MenuGroupRestAssured.createMenuGroupRequest;
 import static kitchenpos.acceptance.MenuRestAssured.selectMenusRequest;
-import static kitchenpos.acceptance.MenuRestAssured.createMenuRequest;
 import static kitchenpos.acceptance.ProductRestAssured.createProductRequest;
 import static kitchenpos.domain.MenuGroupTestFixture.createMenuGroup;
 import static kitchenpos.domain.MenuTestFixture.createMenuProduct;

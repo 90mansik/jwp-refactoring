@@ -83,8 +83,8 @@ public class OrderServiceTest {
                 Arrays.asList(frenchFriesProduct, cokeProduct, beefBurgerProduct));
         chickenBurgerSet = createMenu(2L, "chickenBurgerSet", BigDecimal.valueOf(9000L), burgerSet.getId(),
                 Arrays.asList(frenchFriesProduct, cokeProduct, chickenBurgerProduct));
-        orderTable1 = createOrderTable(1L, null, 5, false);
-        orderTable2 = createOrderTable(2L, null, 7, false);
+        orderTable1 = createOrderTable( 5, false);
+        orderTable2 = createOrderTable(7, false);
         beefBurgerSetOrder = createOrderLineItem(1L, null, beefBurgerSet.getId(), 2);
         chickenBurgerSetOrder = createOrderLineItem(2L, null, chickenBurgerSet.getId(), 1);
         order1 = createOrder(orderTable1.getId(), null, null, Arrays.asList(beefBurgerSetOrder, chickenBurgerSetOrder));
@@ -161,7 +161,7 @@ public class OrderServiceTest {
     @Test
     void 주문_생성_예외4() {
         // given
-        OrderTable orderTable = createOrderTable(4L, null, 6, true);
+        OrderTable orderTable = createOrderTable(6, true);
         Order order = createOrder(orderTable.getId(), null, null, singletonList(beefBurgerSetOrder));
         List<Long> menuIds = order.getOrderLineItems()
                 .stream()

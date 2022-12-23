@@ -36,13 +36,13 @@ public class MenuService {
 
     @Transactional
     public Menu create(final Menu menu) {
-        final BigDecimal price = menu.getPrice();
+        final BigDecimal price = menu.getPrice().getPrice();
 
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException();
         }
 
-        if (!menuGroupDao.existsById(menu.getMenuGroupId())) {
+        if (!menuGroupDao.existsById(menu.getMenuGroupId().getId())) {
             throw new IllegalArgumentException();
         }
 

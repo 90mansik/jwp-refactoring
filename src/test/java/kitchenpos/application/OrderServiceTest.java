@@ -50,68 +50,68 @@ public class OrderServiceTest {
     @InjectMocks
     private OrderService orderService;
 
-    private Product 감자튀김;
-    private Product 불고기버거;
-    private Product 치킨버거;
-    private Product 콜라;
-    private MenuGroup 햄버거세트;
-    private MenuProduct 감자튀김상품;
-    private MenuProduct 불고기버거상품;
-    private MenuProduct 치킨버거상품;
-    private MenuProduct 콜라상품;
-    private Menu 불고기버거세트;
-    private Menu 치킨버거세트;
-    private OrderTable 주문테이블1;
-    private OrderTable 주문테이블2;
-    private OrderLineItem 불고기버거세트주문;
-    private OrderLineItem 치킨버거세트주문;
-    private Order 주문1;
-    private Order 주문2;
+    private Product frenchFries;
+    private Product beefBurger;
+    private Product chickenBurger;
+    private Product coke;
+    private MenuGroup burgerSet;
+    private MenuProduct frenchFriesProduct;
+    private MenuProduct beefBurgerProduct;
+    private MenuProduct chickenBurgerProduct;
+    private MenuProduct cokeProduct;
+    private Menu beefBurgerSet;
+    private Menu chickenBurgerSet;
+    private OrderTable orderTable1;
+    private OrderTable orderTable2;
+    private OrderLineItem beefBurgerSetOrder;
+    private OrderLineItem chickenBurgerSetOrder;
+    private Order order1;
+    private Order order2;
 
     @BeforeEach
     void setUp() {
-        감자튀김 = createProduct(1L, "감자튀김", BigDecimal.valueOf(3000L));
-        콜라 = createProduct(2L, "콜라", BigDecimal.valueOf(1500L));
-        불고기버거 = createProduct(3L, "불고기버거", BigDecimal.valueOf(4000L));
-        치킨버거 = createProduct(4L, "치킨버거", BigDecimal.valueOf(4500L));
-        햄버거세트 = createMenuGroup(1L, "햄버거세트");
-        감자튀김상품 = createMenuProduct(1L, null, 감자튀김.getId(), 1L);
-        콜라상품 = createMenuProduct(2L, null, 콜라.getId(), 1L);
-        불고기버거상품 = createMenuProduct(3L, null, 불고기버거.getId(), 1L);
-        치킨버거상품 = createMenuProduct(3L, null, 치킨버거.getId(), 1L);
-        불고기버거세트 = createMenu(1L, "불고기버거세트", BigDecimal.valueOf(8500L), 햄버거세트.getId(),
-                Arrays.asList(감자튀김상품, 콜라상품, 불고기버거상품));
-        치킨버거세트 = createMenu(2L, "치킨버거세트", BigDecimal.valueOf(9000L), 햄버거세트.getId(),
-                Arrays.asList(감자튀김상품, 콜라상품, 치킨버거상품));
-        주문테이블1 = createOrderTable(1L, null, 5, false);
-        주문테이블2 = createOrderTable(2L, null, 7, false);
-        불고기버거세트주문 = createOrderLineItem(1L, null, 불고기버거세트.getId(), 2);
-        치킨버거세트주문 = createOrderLineItem(2L, null, 치킨버거세트.getId(), 1);
-        주문1 = createOrder(주문테이블1.getId(), null, null, Arrays.asList(불고기버거세트주문, 치킨버거세트주문));
-        주문2 = createOrder(주문테이블2.getId(), null, null, singletonList(불고기버거세트주문));
+        frenchFries = createProduct(1L, "frenchFries", BigDecimal.valueOf(3000L));
+        coke = createProduct(2L, "coke", BigDecimal.valueOf(1500L));
+        beefBurger = createProduct(3L, "beefBurger", BigDecimal.valueOf(4000L));
+        chickenBurger = createProduct(4L, "chickenBurger", BigDecimal.valueOf(4500L));
+        burgerSet = createMenuGroup(1L, "burgerSet");
+        frenchFriesProduct = createMenuProduct(1L, null, frenchFries.getId(), 1L);
+        cokeProduct = createMenuProduct(2L, null, coke.getId(), 1L);
+        beefBurgerProduct = createMenuProduct(3L, null, beefBurger.getId(), 1L);
+        chickenBurgerProduct = createMenuProduct(3L, null, chickenBurger.getId(), 1L);
+        beefBurgerSet = createMenu(1L, "beefBurgerSet", BigDecimal.valueOf(8500L), burgerSet.getId(),
+                Arrays.asList(frenchFriesProduct, cokeProduct, beefBurgerProduct));
+        chickenBurgerSet = createMenu(2L, "chickenBurgerSet", BigDecimal.valueOf(9000L), burgerSet.getId(),
+                Arrays.asList(frenchFriesProduct, cokeProduct, chickenBurgerProduct));
+        orderTable1 = createOrderTable(1L, null, 5, false);
+        orderTable2 = createOrderTable(2L, null, 7, false);
+        beefBurgerSetOrder = createOrderLineItem(1L, null, beefBurgerSet.getId(), 2);
+        chickenBurgerSetOrder = createOrderLineItem(2L, null, chickenBurgerSet.getId(), 1);
+        order1 = createOrder(orderTable1.getId(), null, null, Arrays.asList(beefBurgerSetOrder, chickenBurgerSetOrder));
+        order2 = createOrder(orderTable2.getId(), null, null, singletonList(beefBurgerSetOrder));
     }
 
     @DisplayName("주문을 생성한다.")
     @Test
     void 주문_생성() {
         // given
-        List<Long> menuIds = 주문1.getOrderLineItems()
+        List<Long> menuIds = order1.getOrderLineItems()
                 .stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
         when(menuDao.countByIdIn(menuIds)).thenReturn((long) menuIds.size());
-        when(orderTableDao.findById(주문1.getOrderTableId())).thenReturn(Optional.of(주문테이블1));
-        when(orderDao.save(주문1)).thenReturn(주문1);
-        when(orderLineItemDao.save(불고기버거세트주문)).thenReturn(불고기버거세트주문);
-        when(orderLineItemDao.save(치킨버거세트주문)).thenReturn(치킨버거세트주문);
+        when(orderTableDao.findById(order1.getOrderTableId())).thenReturn(Optional.of(orderTable1));
+        when(orderDao.save(order1)).thenReturn(order1);
+        when(orderLineItemDao.save(beefBurgerSetOrder)).thenReturn(beefBurgerSetOrder);
+        when(orderLineItemDao.save(chickenBurgerSetOrder)).thenReturn(chickenBurgerSetOrder);
         // when
-        Order order = orderService.create(주문1);
+        Order order = orderService.create(order1);
         // then
         assertAll(
                 () -> assertThat(order.getOrderedTime()).isNotNull(),
                 () -> assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
-                () -> assertThat(order.getId()).isEqualTo(불고기버거세트주문.getOrderId()),
-                () -> assertThat(order.getId()).isEqualTo(치킨버거세트주문.getOrderId())
+                () -> assertThat(order.getId()).isEqualTo(beefBurgerSetOrder.getOrderId()),
+                () -> assertThat(order.getId()).isEqualTo(chickenBurgerSetOrder.getOrderId())
         );
     }
 
@@ -119,7 +119,7 @@ public class OrderServiceTest {
     @Test
     void 주문_생성_예외1() {
         // given
-        Order order = createOrder(주문테이블1.getId(), null, null, null);
+        Order order = createOrder(orderTable1.getId(), null, null, null);
         // when & then
         Assertions.assertThatThrownBy(
                 () -> orderService.create(order)
@@ -130,14 +130,14 @@ public class OrderServiceTest {
     @Test
     void 주문_생성_예외2() {
         // given
-        List<Long> menuIds = 주문1.getOrderLineItems()
+        List<Long> menuIds = order1.getOrderLineItems()
                 .stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
         when(menuDao.countByIdIn(menuIds)).thenReturn(0L);
         // when & then
         Assertions.assertThatThrownBy(
-                () -> orderService.create(주문1)
+                () -> orderService.create(order1)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -145,15 +145,15 @@ public class OrderServiceTest {
     @Test
     void 주문_생성_예외3() {
         // given
-        List<Long> menuIds = 주문1.getOrderLineItems()
+        List<Long> menuIds = order1.getOrderLineItems()
                 .stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
         when(menuDao.countByIdIn(menuIds)).thenReturn((long) menuIds.size());
-        when(orderTableDao.findById(주문1.getOrderTableId())).thenReturn(Optional.empty());
+        when(orderTableDao.findById(order1.getOrderTableId())).thenReturn(Optional.empty());
         // when & then
         Assertions.assertThatThrownBy(
-                () -> orderService.create(주문1)
+                () -> orderService.create(order1)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -162,7 +162,7 @@ public class OrderServiceTest {
     void 주문_생성_예외4() {
         // given
         OrderTable orderTable = createOrderTable(4L, null, 6, true);
-        Order order = createOrder(orderTable.getId(), null, null, singletonList(불고기버거세트주문));
+        Order order = createOrder(orderTable.getId(), null, null, singletonList(beefBurgerSetOrder));
         List<Long> menuIds = order.getOrderLineItems()
                 .stream()
                 .map(OrderLineItem::getMenuId)
@@ -179,7 +179,7 @@ public class OrderServiceTest {
     @Test
     void 주문_전체_목록_조회() {
         // given
-        List<Order> orders = Arrays.asList(주문1, 주문2);
+        List<Order> orders = Arrays.asList(order1, order2);
         when(orderDao.findAll()).thenReturn(orders);
         for (Order order : orders) {
             when(orderLineItemDao.findAllByOrderId(order.getId())).thenReturn(order.getOrderLineItems());
@@ -189,7 +189,7 @@ public class OrderServiceTest {
         // then
         assertAll(
                 () -> assertThat(findOrders).hasSize(orders.size()),
-                () -> assertThat(findOrders).containsExactly(주문1, 주문2)
+                () -> assertThat(findOrders).containsExactly(order1, order2)
         );
     }
 
@@ -198,11 +198,11 @@ public class OrderServiceTest {
     void 주문_상태_변경() {
         // given
         String expectOrderStatus = OrderStatus.MEAL.name();
-        Order changeOrder = createOrder(주문2.getId(), 주문2.getOrderTableId(), expectOrderStatus, 주문2.getOrderedTime(), 주문2.getOrderLineItems());
-        when(orderDao.findById(주문2.getId())).thenReturn(Optional.of(주문2));
-        when(orderDao.save(주문2)).thenReturn(주문2);
+        Order changeOrder = createOrder(order2.getId(), order2.getOrderTableId(), expectOrderStatus, order2.getOrderedTime(), order2.getOrderLineItems());
+        when(orderDao.findById(order2.getId())).thenReturn(Optional.of(order2));
+        when(orderDao.save(order2)).thenReturn(order2);
         // when
-        Order resultOrder = orderService.changeOrderStatus(주문2.getId(), changeOrder);
+        Order resultOrder = orderService.changeOrderStatus(order2.getId(), changeOrder);
         // then
         assertThat(resultOrder.getOrderStatus()).isEqualTo(expectOrderStatus);
     }
@@ -215,7 +215,7 @@ public class OrderServiceTest {
         when(orderDao.findById(notExistsOrderId)).thenReturn(Optional.empty());
         // when & then
         Assertions.assertThatThrownBy(
-                () -> orderService.changeOrderStatus(notExistsOrderId, 주문2)
+                () -> orderService.changeOrderStatus(notExistsOrderId, order2)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -223,8 +223,8 @@ public class OrderServiceTest {
     @Test
     void 주문_상태_변경_예외2() {
         // given
-        Order order = createOrder(주문테이블2.getId(), OrderStatus.COMPLETION.name(), null,
-                Arrays.asList(불고기버거세트주문, 치킨버거세트주문));
+        Order order = createOrder(orderTable2.getId(), OrderStatus.COMPLETION.name(), null,
+                Arrays.asList(beefBurgerSetOrder, chickenBurgerSetOrder));
         Order changeOrder = createOrder(order.getId(), order.getOrderTableId(), OrderStatus.MEAL.name(), order.getOrderedTime(), order.getOrderLineItems());
         when(orderDao.findById(order.getId())).thenReturn(Optional.of(order));
         // when & then

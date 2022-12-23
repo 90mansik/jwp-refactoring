@@ -40,33 +40,33 @@ public class TableGroupServiceTest {
     @InjectMocks
     private TableGroupService tableGroupService;
 
-    private OrderTable 주문테이블1;
-    private OrderTable 주문테이블2;
-    private TableGroup 단체1;
+    private OrderTable orderTable1;
+    private OrderTable orderTable2;
+    private TableGroup group1;
 
     @BeforeEach
     void setUp() {
-        주문테이블1 = createOrderTable(1L, null, 5, true);
-        주문테이블2 = createOrderTable(2L, null, 4, true);
-        단체1 = createTableGroup(1L, null, Arrays.asList(주문테이블1, 주문테이블2));
+        orderTable1 = createOrderTable(1L, null, 5, true);
+        orderTable2 = createOrderTable(2L, null, 4, true);
+        group1 = createTableGroup(1L, null, Arrays.asList(orderTable1, orderTable2));
     }
 
     @DisplayName("주문 테이블들에 대해 단체를 설정한다.")
     @Test
     void 단체_생성() {
         // given
-        when(orderTableDao.findAllByIdIn(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId()))).thenReturn(Arrays.asList(주문테이블1, 주문테이블2));
-        when(tableGroupDao.save(단체1)).thenReturn(단체1);
-        when(orderTableDao.save(주문테이블1)).thenReturn(주문테이블1);
-        when(orderTableDao.save(주문테이블2)).thenReturn(주문테이블2);
+        when(orderTableDao.findAllByIdIn(Arrays.asList(orderTable1.getId(), orderTable2.getId()))).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        when(tableGroupDao.save(group1)).thenReturn(group1);
+        when(orderTableDao.save(orderTable1)).thenReturn(orderTable1);
+        when(orderTableDao.save(orderTable2)).thenReturn(orderTable2);
         // when
-        TableGroup saveTableGroup = tableGroupService.create(단체1);
+        TableGroup saveTableGroup = tableGroupService.create(group1);
         // then
         assertAll(
-                () -> assertThat(주문테이블1.getTableGroupId()).isEqualTo(saveTableGroup.getId()),
-                () -> assertThat(주문테이블2.getTableGroupId()).isEqualTo(saveTableGroup.getId()),
-                () -> assertThat(주문테이블1.isEmpty()).isFalse(),
-                () -> assertThat(주문테이블2.isEmpty()).isFalse(),
+                () -> assertThat(orderTable1.getTableGroupId()).isEqualTo(saveTableGroup.getId()),
+                () -> assertThat(orderTable2.getTableGroupId()).isEqualTo(saveTableGroup.getId()),
+                () -> assertThat(orderTable1.isEmpty()).isFalse(),
+                () -> assertThat(orderTable2.isEmpty()).isFalse(),
                 () -> assertThat(saveTableGroup.getCreatedDate()).isNotNull()
         );
     }
@@ -75,17 +75,17 @@ public class TableGroupServiceTest {
     @Test
     void 단체_지정_해제() {
         // given
-        when(orderTableDao.findAllByTableGroupId(단체1.getId())).thenReturn(Arrays.asList(주문테이블1, 주문테이블2));
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId()),
+        when(orderTableDao.findAllByTableGroupId(group1.getId())).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(orderTable1.getId(), orderTable2.getId()),
                 Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
-        when(orderTableDao.save(주문테이블1)).thenReturn(주문테이블1);
-        when(orderTableDao.save(주문테이블2)).thenReturn(주문테이블2);
+        when(orderTableDao.save(orderTable1)).thenReturn(orderTable1);
+        when(orderTableDao.save(orderTable2)).thenReturn(orderTable2);
         // when
-        tableGroupService.ungroup(단체1.getId());
+        tableGroupService.ungroup(group1.getId());
         // then
         assertAll(
-                () -> assertThat(주문테이블1.getTableGroupId()).isNull(),
-                () -> assertThat(주문테이블2.getTableGroupId()).isNull()
+                () -> assertThat(orderTable1.getTableGroupId()).isNull(),
+                () -> assertThat(orderTable2.getTableGroupId()).isNull()
         );
     }
 
@@ -93,7 +93,7 @@ public class TableGroupServiceTest {
     @Test
     void 단체_생성_예외1() {
         // given
-        TableGroup tableGroup = createTableGroup(2L, null, singletonList(주문테이블1));
+        TableGroup tableGroup = createTableGroup(2L, null, singletonList(orderTable1));
         // when & then
         Assertions.assertThatThrownBy(
                 () -> tableGroupService.create(tableGroup)
@@ -104,10 +104,10 @@ public class TableGroupServiceTest {
     @Test
     void 단체_생성_예외2() {
         // given
-        when(orderTableDao.findAllByIdIn(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId()))).thenReturn(singletonList(주문테이블1));
+        when(orderTableDao.findAllByIdIn(Arrays.asList(orderTable1.getId(), orderTable2.getId()))).thenReturn(singletonList(orderTable1));
         // when & then
         Assertions.assertThatThrownBy(
-                () -> tableGroupService.create(단체1)
+                () -> tableGroupService.create(group1)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -116,9 +116,9 @@ public class TableGroupServiceTest {
     void 단체_생성_예외3() {
         // given
         OrderTable orderTable = createOrderTable(null, null, 5, false);
-        TableGroup tableGroup = createTableGroup(3L, null, Arrays.asList(orderTable, 주문테이블1));
-        when(orderTableDao.findAllByIdIn(Arrays.asList(orderTable.getId(), 주문테이블1.getId()))).thenReturn(
-                Arrays.asList(orderTable, 주문테이블1));
+        TableGroup tableGroup = createTableGroup(3L, null, Arrays.asList(orderTable, orderTable1));
+        when(orderTableDao.findAllByIdIn(Arrays.asList(orderTable.getId(), orderTable1.getId()))).thenReturn(
+                Arrays.asList(orderTable, orderTable1));
 
         // when & then
         Assertions.assertThatThrownBy(
@@ -131,9 +131,9 @@ public class TableGroupServiceTest {
     void 단체_생성_예외4() {
         // given
         OrderTable orderTable = createOrderTable(null, 1L, 5, true);
-        TableGroup tableGroup = createTableGroup(3L, null, Arrays.asList(orderTable, 주문테이블1));
-        when(orderTableDao.findAllByIdIn(Arrays.asList(orderTable.getId(), 주문테이블1.getId()))).thenReturn(
-                Arrays.asList(orderTable, 주문테이블1));
+        TableGroup tableGroup = createTableGroup(3L, null, Arrays.asList(orderTable, orderTable1));
+        when(orderTableDao.findAllByIdIn(Arrays.asList(orderTable.getId(), orderTable1.getId()))).thenReturn(
+                Arrays.asList(orderTable, orderTable1));
         // when & then
         Assertions.assertThatThrownBy(
                 () -> tableGroupService.create(tableGroup)
@@ -145,12 +145,12 @@ public class TableGroupServiceTest {
     @Test
     void upGroupThrowErrorWhenOrderTableStatusIsCookingOrMeal() {
         // given
-        when(orderTableDao.findAllByTableGroupId(단체1.getId())).thenReturn(Arrays.asList(주문테이블1, 주문테이블2));
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId()),
+        when(orderTableDao.findAllByTableGroupId(group1.getId())).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(orderTable1.getId(), orderTable2.getId()),
                 Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
         // when & then
         Assertions.assertThatThrownBy(
-                () -> tableGroupService.ungroup(단체1.getId())
+                () -> tableGroupService.ungroup(group1.getId())
         ).isInstanceOf(IllegalArgumentException.class);
     }
 }

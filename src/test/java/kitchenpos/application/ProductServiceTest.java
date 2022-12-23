@@ -30,26 +30,26 @@ public class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
 
-    private Product 허니콤보;
-    private Product 레드윙;
+    private Product honeyCombo;
+    private Product redWing;
 
     @BeforeEach
     void setUp() {
-        허니콤보 = createProduct(1L, "허니콤보", BigDecimal.valueOf(18000));
-        레드윙 = createProduct(2L, "레드윙", BigDecimal.valueOf(19000));
+        honeyCombo = createProduct(1L, "honeyCombo", BigDecimal.valueOf(18000));
+        redWing = createProduct(2L, "redWing", BigDecimal.valueOf(19000));
     }
 
     @DisplayName("상품을 생성한다.")
     @Test
     void 상품_생성() {
         // given
-        when(productDao.save(허니콤보)).thenReturn(허니콤보);
+        when(productDao.save(honeyCombo)).thenReturn(honeyCombo);
         // when
-        Product result = productService.create(허니콤보);
+        Product result = productService.create(honeyCombo);
         // then
         assertAll(
-                () -> assertThat(result.getName()).isEqualTo(허니콤보.getName()),
-                () -> assertThat(result.getPrice()).isEqualTo(허니콤보.getPrice())
+                () -> assertThat(result.getName()).isEqualTo(honeyCombo.getName()),
+                () -> assertThat(result.getPrice()).isEqualTo(honeyCombo.getPrice())
         );
     }
 
@@ -57,14 +57,14 @@ public class ProductServiceTest {
     @Test
     void 상품_전체_목록_조회() {
         // given
-        List<Product> products = Arrays.asList(허니콤보, 레드윙);
+        List<Product> products = Arrays.asList(honeyCombo, redWing);
         when(productDao.findAll()).thenReturn(products);
         // when
         List<Product> findProducts = productService.list();
         // then
         assertAll(
                 () -> assertThat(findProducts).hasSize(products.size()),
-                () -> assertThat(findProducts).containsExactly(허니콤보, 레드윙)
+                () -> assertThat(findProducts).containsExactly(honeyCombo, redWing)
         );
     }
 
@@ -72,7 +72,7 @@ public class ProductServiceTest {
     @Test
     void 상품_생성_예외_테스트1() {
         // given
-        Product product = createProduct(3L, "콜라", BigDecimal.valueOf(-1));
+        Product product = createProduct(3L, "coke", BigDecimal.valueOf(-1));
         // when
         Assertions.assertThatThrownBy(
                 () -> productService.create(product)
@@ -83,7 +83,7 @@ public class ProductServiceTest {
     @Test
     void 상품_생성_예외_테스트2() {
         // given
-        Product product = createProduct(3L, "콜라", null);
+        Product product = createProduct(3L, "coke", null);
         // when
         Assertions.assertThatThrownBy(
                 () -> productService.create(product)

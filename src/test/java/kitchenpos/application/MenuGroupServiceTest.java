@@ -28,26 +28,26 @@ public class MenuGroupServiceTest {
     @InjectMocks
     private MenuGroupService menuGroupservice;
 
-    private MenuGroup 치킨세트;
-    private MenuGroup 햄버거세트;
+    private MenuGroup chickenSet;
+    private MenuGroup burgerSet;
 
     @BeforeEach
     void setUp() {
-        치킨세트 = createMenuGroup(1L, "치킨세트");
-        햄버거세트 = createMenuGroup(2L, "햄버거세트");
+        chickenSet = createMenuGroup(1L, "chickenSet");
+        burgerSet = createMenuGroup(2L, "burgerSet");
     }
 
     @DisplayName("메뉴 그룹을 생성한다.")
     @Test
     void 메뉴_그룹_생성() {
         // given
-        when(menuGroupDao.save(치킨세트)).thenReturn(치킨세트);
+        when(menuGroupDao.save(chickenSet)).thenReturn(chickenSet);
         // when
-        MenuGroup createMenuGrep = menuGroupservice.create(치킨세트);
+        MenuGroup createMenuGrep = menuGroupservice.create(chickenSet);
         // then
         assertAll(
                 () -> assertThat(createMenuGrep.getId()).isNotNull(),
-                () -> assertThat(createMenuGrep.getName()).isEqualTo(치킨세트.getName())
+                () -> assertThat(createMenuGrep.getName()).isEqualTo(chickenSet.getName())
         );
     }
 
@@ -55,14 +55,14 @@ public class MenuGroupServiceTest {
     @Test
     void 메뉴_그룹_전체_목록_조회() {
         // given
-        List<MenuGroup> menuGroups = Arrays.asList(치킨세트, 햄버거세트);
+        List<MenuGroup> menuGroups = Arrays.asList(chickenSet, burgerSet);
         when(menuGroupDao.findAll()).thenReturn(menuGroups);
         // when
         List<MenuGroup> findMenuGroups = menuGroupservice.list();
         // then
         assertAll(
                 () -> assertThat(findMenuGroups).hasSize(2),
-                () -> assertThat(findMenuGroups).containsExactly(치킨세트, 햄버거세트)
+                () -> assertThat(findMenuGroups).containsExactly(chickenSet, burgerSet)
         );
     }
 
